@@ -24,6 +24,43 @@ test.describe('Game Listing and Navigation', () => {
     });
   });
 
+  test('should filter games by category and publisher together', async ({ page }) => {
+    await page.goto('/');
+    const categoryFilter = page.getByTestId('category-filter');
+    const publisherFilter = page.getByTestId('publisher-filter');
+    const firstCard = page.getByTestId('game-card').first();
+    const categoryId = await firstCard.getAttribute('data-category-id');
+    const publisherId = await firstCard.getAttribute('data-publisher-id');
+
+    await test.step('Select category and publisher filters', async () => {
+      await categoryFilter.selectOption(categoryId ?? '');
+      await publisherFilter.selectOption(publisherId ?? '');
+    });
+
+    await test.step('Verify combined filter results', async () => {
+      const visibleCards = page.locator('[data-testid="game-card"]:visible');
+      await expect(visibleCards).not.toHaveCount(0);
+      await expect(page.getByTestId('filter-results')).toHaveText(/Showing \d+ games?/);
+      for (const card of await visibleCards.all()) {
+        await expect(card).toHaveAttribute('data-category-id', categoryId ?? '');
+        await expect(card).toHaveAttribute('data-publisher-id', publisherId ?? '');
+      }
+    });
+  });
+
+  test('should clear game filters and restore all games', async ({ page }) => {
+    await page.goto('/');
+    const initialCount = await page.getByTestId('game-card').count();
+    const categoryFilter = page.getByTestId('category-filter');
+
+    await categoryFilter.selectOption({ index: 1 });
+    await expect(page.locator('[data-testid="game-card"]:visible')).not.toHaveCount(initialCount);
+
+    await page.getByTestId('clear-filters').click();
+    await expect(page.locator('[data-testid="game-card"]:visible')).toHaveCount(initialCount);
+    await expect(page.getByTestId('filter-results')).toContainText(`Showing ${initialCount}`);
+  });
+
   test('should navigate to correct game details page when clicking on a game', async ({ page }) => {
     let gameId: string | null;
     let gameTitle: string | null;
