@@ -32,6 +32,13 @@ const games = await getAllGames(getDatabase());
 </Layout>
 ```
 
+### Component contracts and comments
+
+- Every reusable component in `src/components/` and `src/layouts/` must define a `Props` interface in frontmatter, even when it currently has no props. Keep the interface next to the destructuring of `Astro.props`.
+- Document each `Props` interface with a short comment that explains the component contract and any non-obvious prop constraints. Document individual properties when their meaning or allowed values is not obvious from the type.
+- Comments should explain intent, accessibility decisions, or rendering constraints — not paraphrase markup or class names. Remove or update comments that become inaccurate when the component changes.
+- Use TSDoc/JSDoc for exported TypeScript functions in `.astro` frontmatter when a component exposes or reuses them.
+
 ## Layouts
 
 - Create reusable layout components in `src/layouts/`
@@ -109,8 +116,9 @@ There is no Svelte/React layer. When a page genuinely needs client behaviour, ad
 ## TypeScript
 
 - Use TypeScript for type-safe props
-- Define `Props` interface in frontmatter
+- Define and document a `Props` interface in frontmatter for every reusable component
 - Type component imports and helper return values
+- Follow the repository TypeScript formatting rules: four-space indentation, single quotes, semicolons, and trailing commas in multiline constructs. ESLint enforces quotes, semicolons, and trailing commas for `.astro` files.
 - Run `npx astro sync` to (re)generate route/content types before linting or type-checking
 - `.astro` files are type-checked by `npm run typecheck:astro` (which runs `astro sync` then `astro check`), on the classic `typescript` package. The pure TypeScript in `db/`, `src/lib/`, and `src/types/` is type-checked separately by `npm run typecheck` (the native TS 7 compiler, `tsgo`), which does **not** process `.astro` files.
 
