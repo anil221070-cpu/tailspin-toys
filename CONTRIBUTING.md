@@ -63,8 +63,17 @@ Before you can run and test the application locally, you'll need to install:
 - Build UI as `.astro` pages and components; query data in frontmatter (static output)
 - Follow the dark theme using Tailwind CSS utility classes
 - Add `data-testid` attributes to interactive elements for testing
+- Define and document a `Props` interface in every reusable `.astro` component
+- Write comments that explain intent and decisions, not comments that restate the code; update or remove stale comments
 - Run E2E tests before submitting: `npm run test:e2e`
    - All tests must pass
+
+### Comments and TypeScript formatting
+
+- Add TSDoc/JSDoc to every exported function in `db/` and `src/lib/`, describing its purpose, parameters, and return value.
+- Use four-space indentation, single quotes, semicolons, and trailing commas in multiline TypeScript and Astro constructs.
+- Prefer simple `T[]` array types and `interface` for object-shaped public contracts. ESLint enforces the quote, semicolon, and multiline trailing-comma conventions.
+- Run lint through the repository's `quality-checks` skill before submitting changes.
 
 ## Submitting a Pull Request
 

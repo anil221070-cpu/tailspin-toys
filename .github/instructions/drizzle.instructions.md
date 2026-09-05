@@ -55,6 +55,14 @@ export async function getAllGameIds(db: Database): Promise<number[]> {
 - Map raw rows to the app-facing `Game`/`Publisher`/`Category` types in one place; don't leak Drizzle row shapes into components.
 - Keep ordering/lookup logic in `games.ts`, not in pages.
 
+## Comments and TSDoc
+
+- Comment intent, constraints, and non-obvious decisions — never restate what the code already expresses.
+- Treat stale comments as bugs. Update or remove a comment whenever the related code changes.
+- Every exported function in `db/` and `src/lib/` must have a TSDoc/JSDoc comment immediately above its declaration.
+- Each function comment must describe the function's purpose, every parameter (including the injectable `db` argument), and its return value. Use `@param` and `@returns` tags when the signature or behavior is not self-evident.
+- Exported tables, types, and constants should be documented when their purpose is not clear from their name or surrounding schema.
+
 ## Determinism
 
 Seed-derived values must be reproducible across builds. Derive star ratings from a stable hash of the title (`ratingFromTitle`) — **never** `Math.random()`.
@@ -70,3 +78,9 @@ Node.js 22.13 or later is required because the data layer uses the built-in `nod
 ## Type checking
 
 The data layer (`db/**/*.ts`, `src/lib/*.ts`) is type-checked by `npm run typecheck`, which runs the native **TypeScript 7** compiler (`tsgo`, from `@typescript/native-preview`) against `tsconfig.tsgo.json`. Keep helpers exported with explicit parameter and return types so `tsgo` can verify them. Linting is unaffected — ESLint + `typescript-eslint` still run on the classic `typescript` package.
+
+## TypeScript formatting
+
+- Use four-space indentation, single quotes, semicolons, and trailing commas in multiline literals and parameter lists.
+- Prefer `T[]` for simple array types and interfaces for object-shaped public contracts.
+- ESLint enforces single quotes, semicolons, and multiline trailing commas for TypeScript and Astro files. Run `npm run lint` through the `quality-checks` skill before submitting changes.
